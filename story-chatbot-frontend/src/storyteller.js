@@ -1,31 +1,33 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
+import { getEnvVar } from "./utils/env";
+
 
 class StoryTeller {
     constructor() {
         this.chat = new ChatOpenAI({
+            openAIApiKey: getEnvVar('VITE_OPENAI_API_KEY'),
             modelName: "gpt-3.5-turbo",
             temperature: 0.7,
         });
         this.isStoryActive = false;
         this.messageHistory = [];
-    }
 
-    async initialize() {
-        // Set up the initial system prompt
-        const systemPrompt = `You are an interactive storyteller. You tell stories where the player makes choices to progress.
-        Format your responses exactly like this:
-        [STORY] {current story segment}
-        [CHOICES]
-        1. {first choice}
-        2. {second choice}
-        3. {third choice}
+        // Initialize with system prompt
+        this.systemPrompt = new SystemMessage({
+            content: `You are an interactive storyteller. You tell stories where the player makes choices to progress.
+            Format your responses exactly like this:
+            [STORY] {current story segment}
+            [CHOICES]
+            1. {first choice}
+            2. {second choice}
+            3. {third choice}
 
-        Only respond with /END when the story reaches a natural conclusion.
-        Wait for the player to send /START to begin the story.
-        Only accept inputs of "1", "2", or "3" for choices.`;
-
-        this.messageHistory.push(new SystemMessage(systemPrompt));
+            Only respond with /END when the story reaches a natural conclusion.
+            Wait for the player to send /START to begin the story.
+            Only accept inputs of "1", "2", or "3" for choices.`
+        });
+        this.messageHistory.push(this.systemPrompt);
     }
 
     async processMessage(userInput) {
@@ -46,14 +48,16 @@ class StoryTeller {
     }
 
     async startStory() {
-        const response = await this.chat.call(this.messageHistory);
+        const response = await this.chat.invoke(this.messageHistory);
         this.messageHistory.push(response);
         return this.parseResponse(response.content);
     }
 
     async continueStory(choice) {
-        this.messageHistory.push(new HumanMessage(choice));
-        const response = await this.chat.call(this.messageHistory);
+        const userMessage = new HumanMessage(choice);
+        this.messageHistory.push(userMessage);
+
+        const response = await this.chat.invoke(this.messageHistory);
         this.messageHistory.push(response);
 
         if (response.content.includes("/END")) {
@@ -70,7 +74,10 @@ class StoryTeller {
 
         return {
             story: storyMatch ? storyMatch[1].trim() : "",
-            choices: choicesMatch ? choicesMatch[1].trim().split('\n') : []
+            choices: choicesMatch ?
+                choicesMatch[1].trim().split('\n')
+                    .map(choice => choice.trim())
+                    .filter(choice => choice.length > 0) : []
         };
     }
 }
