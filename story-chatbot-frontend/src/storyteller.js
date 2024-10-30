@@ -2,13 +2,13 @@ import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
 import { getEnvVar } from "./utils/env";
 
-
 class StoryTeller {
     constructor() {
         this.chat = new ChatOpenAI({
             openAIApiKey: getEnvVar('VITE_OPENAI_API_KEY'),
             modelName: "gpt-3.5-turbo",
             temperature: 0.7,
+            verbose: true,
         });
         this.isStoryActive = false;
         this.messageHistory = [];
@@ -36,6 +36,12 @@ class StoryTeller {
             return this.startStory();
         }
 
+        if (userInput === "/END" && this.isStoryActive) {
+            this.isStoryActive = false;
+            this.messageHistory = [this.systemPrompt];
+            return "Story has ended. Send /START to begin a new story.";
+        }
+
         if (!this.isStoryActive) {
             return "Please send /START to begin the story.";
         }
@@ -48,7 +54,10 @@ class StoryTeller {
     }
 
     async startStory() {
+        const userMessage = new HumanMessage("/START");
+        this.messageHistory.push(userMessage);
         const response = await this.chat.invoke(this.messageHistory);
+        console.log(response);
         this.messageHistory.push(response);
         return this.parseResponse(response.content);
     }
@@ -58,10 +67,12 @@ class StoryTeller {
         this.messageHistory.push(userMessage);
 
         const response = await this.chat.invoke(this.messageHistory);
+        console.log(response);
         this.messageHistory.push(response);
 
         if (response.content.includes("/END")) {
             this.isStoryActive = false;
+            this.messageHistory = [this.systemPrompt];
             return "Story has ended. Send /START to begin a new story.";
         }
 
