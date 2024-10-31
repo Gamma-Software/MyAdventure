@@ -1,6 +1,6 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
-import { getEnvVar } from "./utils/env";
+import { getEnvVar } from "../utils/env";
 
 class StoryTeller {
     constructor() {
@@ -23,6 +23,7 @@ class StoryTeller {
             2. {second choice}
             3. {third choice}
 
+            Do not forget the [STORY] and [CHOICES] tags.
             Only respond with /END when the story reaches a natural conclusion.
             Wait for the player to send /START to begin the story.
             Only accept inputs of "1", "2", or "3" for choices.`
@@ -34,12 +35,6 @@ class StoryTeller {
         if (userInput === "/START" && !this.isStoryActive) {
             this.isStoryActive = true;
             return this.startStory();
-        }
-
-        if (userInput === "/END" && this.isStoryActive) {
-            this.isStoryActive = false;
-            this.messageHistory = [this.systemPrompt];
-            return "Story has ended. Send /START to begin a new story.";
         }
 
         if (!this.isStoryActive) {
@@ -70,11 +65,10 @@ class StoryTeller {
         console.log(response);
         this.messageHistory.push(response);
 
-        if (response.content.includes("/END")) {
-            this.isStoryActive = false;
-            this.messageHistory = [this.systemPrompt];
-            return "Story has ended. Send /START to begin a new story.";
-        }
+        //if (response.content.includes("/END")) {
+        this.isStoryActive = false;
+        this.messageHistory = [this.systemPrompt];
+        return "/END";
 
         return this.parseResponse(response.content);
     }

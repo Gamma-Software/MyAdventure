@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import StoryTeller from '../storyteller';
+import StoryTeller from '../llm/Storyteller';
 
 const StoryContext = createContext();
 
@@ -7,6 +7,7 @@ export function StoryProvider({ children }) {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [storyteller] = useState(() => new StoryTeller());
+  const [currentStage, setCurrentStage] = useState('start');
 
   useEffect(() => {
     storyteller.initialize?.();
@@ -48,7 +49,7 @@ export function StoryProvider({ children }) {
   };
 
   return (
-    <StoryContext.Provider value={{ messages, isLoading, sendMessage }}>
+    <StoryContext.Provider value={{ messages, isLoading, currentStage, sendMessage, setCurrentStage }}>
       {children}
     </StoryContext.Provider>
   );
