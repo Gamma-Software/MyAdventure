@@ -13,7 +13,7 @@ export default function Fullscreen({ children }) {
             borderRadius="lg"
             borderWidth="1px"
             // overflow="hidden"
-            bg={useColorModeValue('gray.200', 'gray.700')}
+            bg={useColorModeValue('gray.100', 'gray.700')}
           >
             {children}
           </Box>
