@@ -18,6 +18,7 @@ import {
   Heading
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon, ArrowBackIcon, RepeatIcon, HamburgerIcon } from '@chakra-ui/icons'
+import { useStory } from '../context/StoryContext'
 
 interface Props {
   children: React.ReactNode
@@ -45,13 +46,13 @@ const NavLink = (props: Props) => {
 export default function Nav() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const { setCurrentStage } = useStory();
   const handleBack = () => {
-    console.log('back');
+    setCurrentStage('start');
   };
 
   const handleRepeat = () => {
-    console.log('repeat');
+    setCurrentStage('start');
   };
 
   const handleUpDown = () => {
