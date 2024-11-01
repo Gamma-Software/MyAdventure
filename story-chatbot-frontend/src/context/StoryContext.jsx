@@ -9,10 +9,6 @@ export function StoryProvider({ children }) {
   const [storyteller] = useState(() => new StoryTeller());
   const [currentStage, setCurrentStage] = useState('start');
 
-  useEffect(() => {
-    storyteller.initialize?.();
-  }, [storyteller]);
-
   const sendMessage = async (message) => {
     setIsLoading(true);
     try {
@@ -47,6 +43,11 @@ export function StoryProvider({ children }) {
     }
     setIsLoading(false);
   };
+
+
+  useEffect(() => {
+    storyteller.initialize?.();
+  }, [storyteller]);
 
   return (
     <StoryContext.Provider value={{ messages, isLoading, currentStage, sendMessage, setCurrentStage }}>

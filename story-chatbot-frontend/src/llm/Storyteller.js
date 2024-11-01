@@ -6,7 +6,7 @@ class StoryTeller {
     constructor() {
         this.chat = new ChatOpenAI({
             openAIApiKey: getEnvVar('VITE_OPENAI_API_KEY'),
-            modelName: "gpt-3.5-turbo",
+            modelName: "gpt-4o-mini",
             temperature: 0.7,
             verbose: true,
         });

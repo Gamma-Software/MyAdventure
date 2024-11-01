@@ -4,13 +4,17 @@ import { useStory } from '../context/StoryContext';
 
 export default function Start() {
     const color = useColorModeValue('gray.500', 'gray.300');
-    const { setCurrentStage, sendMessage, isLoading } = useStory();
+    const { currentStage, setCurrentStage, sendMessage, isLoading } = useStory();
 
     const startGame = () => {
         sendMessage("/START").then(() => {
             setCurrentStage('play');
         });
     }
+
+    // If the current stage is not 'start', don't render the component
+    if (currentStage !== 'start') return null;
+
 
     return (
         <Flex flexDirection={'column'}>

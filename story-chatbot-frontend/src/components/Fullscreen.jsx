@@ -2,6 +2,8 @@
 import { Container, VStack, Box, useColorModeValue } from '@chakra-ui/react';
 import Nav from './Nav';
 export default function Fullscreen({ children }) {
+  const bgBox = useColorModeValue('gray.100', 'gray.700');
+
   return (
     <>
       <Nav />
@@ -13,7 +15,7 @@ export default function Fullscreen({ children }) {
             borderRadius="lg"
             borderWidth="1px"
             // overflow="hidden"
-            bg={useColorModeValue('gray.100', 'gray.700')}
+            bg={bgBox}
           >
             {children}
           </Box>

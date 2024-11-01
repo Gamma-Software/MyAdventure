@@ -8,10 +8,7 @@ import { useStory } from '../context/StoryContext';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { sendFeedbackToSlack } from '../utils/feedback';
 
-export default function Feedback() {
-    const { setCurrentStage } = useStory();
-    const {isLoading, response, submit} = useSubmit();
-
+export default function Feedback({setCurrentStage, isLoading}) {
     const formik = useFormik({
         initialValues: { ratings: {"How was the story?": 0, "How was the characters?": 0}, email: "", inputfeedback: "" },
         onSubmit: values => {

@@ -11,9 +11,9 @@ export default function Playground() {
     }, [currentStage]);
     return (
         <>
-            {currentStage === 'start' && <Start />}
-            {currentStage === 'play' && <Play />}
-            {currentStage === 'gameover' && <Gameover />}
+            <Start />
+            <Play />
+            <Gameover />
         </>
     )
 }

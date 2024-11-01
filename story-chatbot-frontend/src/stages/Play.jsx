@@ -4,12 +4,14 @@ import { useStory } from '../context/StoryContext';
 
 export default function Play() {
     const color = useColorModeValue('gray.500', 'gray.300');
-    const { messages, sendMessage, isLoading, setCurrentStage } = useStory();
-    console.log(messages[3]);
+    const { messages, currentStage, sendMessage, isLoading, setCurrentStage } = useStory();
     const message = messages[messages.length - 1];
-    const isUser = message.role === 'user';
+    const bgButton = useColorModeValue('gray.300', 'gray.500');
+    const bgButtonHover = useColorModeValue('gray.400', 'gray.600');
 
     useEffect(() => {
+        if (!message) return;
+
         if (typeof message.content === 'string' && message.content === '/END') {
             setCurrentStage('gameover');
         }
@@ -35,9 +37,9 @@ export default function Play() {
                     key={index}
                     onClick={() => sendMessage((index + 1).toString())}
                     size='sm'
-                    bg={useColorModeValue('gray.300', 'gray.500')}
+                    bg={bgButton}
                     _hover={{
-                        bg: useColorModeValue('gray.400', 'gray.600')
+                        bg: bgButtonHover
                     }}
                     fontWeight={'bold'}
                 >
@@ -45,10 +47,11 @@ export default function Play() {
                 </Button>
             ));
         }
-
         return null;
     }
 
+    // If the current stage is not 'play', don't render the component
+    if (currentStage !== 'play') return null;
 
     return (
         <Flex flexDirection={'column'}>
