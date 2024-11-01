@@ -58,7 +58,7 @@ export default function Feedback({setCurrentStage, isLoading}) {
                     onBlur={formik.handleBlur}/>
                 </FormControl>
                 <Button type="submit" colorScheme="green" isLoading={isLoading} loadingText='Loading...' rightIcon={<ArrowForwardIcon />} alignSelf={"end"}  >
-                    Submit
+                    Play Again
                 </Button>
             </VStack>
         </form>

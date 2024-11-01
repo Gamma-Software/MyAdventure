@@ -35,6 +35,9 @@ import {
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon, ArrowBackIcon, RepeatIcon, HamburgerIcon } from '@chakra-ui/icons'
 import { useStory } from '../context/StoryContext'
+import { Confirm } from  "../components/QuitgameDialog";
+import { DisplayStory } from "../components/StoryModel";
+
 
 interface Props {
     children: React.ReactNode
@@ -60,34 +63,61 @@ const NavLink = (props: Props) => {
 }
 
 export default function Nav() {
-    const { messages, currentStage, setCurrentStage } = useStory();
+    const { messages, currentStage, setCurrentStage, endStoryCallback } = useStory();
     const { colorMode, toggleColorMode } = useColorMode();
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const [dialogType, setDialogType] = useState('');
     const bgBox = useColorModeValue('gray.100', 'gray.900');
     const bgButton = useColorModeValue('gray.200', 'gray.700');
-    const cancelRef = useRef(null);
 
-    const handleBack = () => {
-        setDialogType("back");
-        onOpen();
+    const handleQuit = () => {
+        Confirm({
+        title: "Quit Game?",
+        message: "Are you sure you want to quit the game?",
+        okText: 'Yes',
+        cancelText: 'No',
+        confirmColor: 'primary',
+        onOk() {
+            setCurrentStage('start');
+            endStoryCallback();
+        },
+        onCancel() {},
+        });
     };
 
     const handleRepeat = () => {
-        setDialogType("repeat");
-        onOpen();
+        Confirm({
+        title: "Restart Game?",
+        message: "Are you sure you want to restart the game?",
+        okText: 'Yes',
+        cancelText: 'No',
+        confirmColor: 'primary',
+        onOk() {
+            endStoryCallback();
+            setCurrentStage('play');
+        },
+        onCancel() {},
+        });
     };
 
     const handleUpDown = () => {
-        setDialogType("updown");
-        onOpen();
+        const msg = messages.map((message, index) => {
+            return message.role !== "user" ? (
+                message.content
+            ) : null
+        }).join('\n');
+
+        DisplayStory({
+        title: "Story and Choices",
+        message: msg,
+        okText: 'Continue',
+        cancelText: 'Close',
+        confirmColor: 'primary',
+        onOk() {},
+        onCancel() {},
+        });
     };
 
-    const handleQuitReset = () => {
-        onClose();
-        setDialogType("");
-        setCurrentStage('start');
-    };
+
+
 
     return (
         <>
@@ -97,7 +127,7 @@ export default function Nav() {
                 <Heading size='md' textAlign={'center'} mr={4}>MyAdventure</Heading>
                 {currentStage === "play" ? (
                     <Stack direction={'row'} spacing={2}>
-                        <Button onClick={handleBack} bg={bgButton}>
+                        <Button onClick={handleQuit} bg={bgButton}>
                         <ArrowBackIcon />
                     </Button>
                     <Button onClick={handleRepeat} bg={bgButton}>
@@ -118,7 +148,7 @@ export default function Nav() {
                     {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
                 </Button>
 
-                <Menu>
+                {/* <Menu>
                     <MenuButton
                     as={Button}
                     rounded={'full'}
@@ -148,60 +178,11 @@ export default function Nav() {
                     <MenuItem>Account Settings</MenuItem>
                     <MenuItem>Logout</MenuItem>
                     </MenuList>
-                </Menu>
+                </Menu> */}
                 </Stack>
             </Flex>
             </Flex>
         </Box>
-
-        {/* AlertDialog for "back" and "repeat" */}
-        <AlertDialog
-            motionPreset='slideInBottom'
-            leastDestructiveRef={cancelRef}
-            onClose={onClose}
-            isOpen={isOpen}
-            isCentered
-        >
-            <AlertDialogOverlay />
-            <AlertDialogContent>
-            <AlertDialogHeader>{dialogType === "back" ? "Quit Game?" : "Repeat Game?"}</AlertDialogHeader>
-            <AlertDialogCloseButton />
-            <AlertDialogBody>
-                Are you sure you want to {dialogType === "back" ? "quit" : "repeat"} the game?
-            </AlertDialogBody>
-            <AlertDialogFooter>
-                <Button ref={cancelRef} onClick={onClose}>
-                No
-                </Button>
-                <Button colorScheme='red' ml={3} onClick={dialogType === "back" ? handleQuitReset : handleQuitReset}>
-                Yes
-                </Button>
-            </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
-
-        {/* Modal for "updown" */}
-        <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-            <ModalHeader>Story and Choices</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody pb={6}>
-                {messages.map((message, index) => (
-                    message.role !== "user" ? (
-                        message.content
-                    ) : null
-                ))}
-            </ModalBody>
-
-            <ModalFooter>
-            <Button colorScheme='blue' mr={3}>
-                Save
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-            </ModalFooter>
-        </ModalContent>
-        </Modal>
         </>
     )
 }

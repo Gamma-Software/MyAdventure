@@ -1,4 +1,4 @@
-import { Heading, VStack, Button, Center, Flex, useColorModeValue } from "@chakra-ui/react"
+import { Heading, VStack, Spacer, Button, Center, Flex, useColorModeValue } from "@chakra-ui/react"
 import { ArrowForwardIcon } from '@chakra-ui/icons'
 import { useStory } from '../context/StoryContext';
 
@@ -17,13 +17,12 @@ export default function Start() {
 
 
     return (
+        <Center h='100%'>
         <Flex flexDirection={'column'}>
-            <Center h='66vh'>
-                <VStack spacing={4} padding={16}>
-                    <Heading as="h1" color={color} textAlign="center">You embody a character in an interactive story where you choose actions to take from several options.</Heading>
-                    <Heading as="h2" color={color} textAlign="center">Good luck!</Heading>
-                </VStack>
-            </Center>
+            <VStack spacing={4} padding={16}>
+                <Heading as="h1" color={color} textAlign="center">You embody a character in an interactive story where you choose actions to take from several options. You'll be able to embark on an infinite adventures!</Heading>
+                <Heading as="h2" color={color} textAlign="center">Good luck!</Heading>
+            </VStack>
             <Center>
                 <Button
                     rightIcon={<ArrowForwardIcon />}
@@ -33,9 +32,10 @@ export default function Start() {
                     isLoading={isLoading}
                     loadingText='Loading...'
                 >
-                    Commencer
+                    Start
                 </Button>
             </Center>
         </Flex>
+        </Center>
     )
 }

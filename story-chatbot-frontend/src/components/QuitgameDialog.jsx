@@ -1,38 +1,94 @@
-import { useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Button } from '@chakra-ui/react';
+import {
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogCloseButton,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogOverlay,
+    Button,
+    theme,
+    ThemeProvider,
+    useDisclosure
+  } from "@chakra-ui/react";
+  import React, { useEffect, useRef } from "react";
+  import ReactDOM from "react-dom/client";
 
-export default function QuitgameDialog() {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const cancelRef = React.useRef()
+  let returnResponse;
 
-  return (
-    <>
-      <Button onClick={onOpen}>Discard</Button>
-      <AlertDialog
-        motionPreset='slideInBottom'
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-        isOpen={isOpen}
-        isCentered
-      >
-        <AlertDialogOverlay />
+  const AlertRoot = (props) => {
+    const { title, message, cancelText, okText, onOk, onCancel } = props;
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = useRef(null);
 
-        <AlertDialogContent>
-          <AlertDialogHeader>Discard Changes?</AlertDialogHeader>
-          <AlertDialogCloseButton />
-          <AlertDialogBody>
-            Are you sure you want to discard all of your notes? 44 words will be
-            deleted.
-          </AlertDialogBody>
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
-              No
-            </Button>
-            <Button colorScheme='red' ml={3}>
-              Yes
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
-  )
-}
+    useEffect(() => {
+      onOpen();
+    }, [onOpen]);
+
+    const confirm = () => {
+      onOk();
+      onClose();
+    };
+
+    const cancel = () => {
+      onCancel();
+      onClose();
+    };
+
+    return (
+      <>
+        <ThemeProvider theme={theme}>
+          <AlertDialog
+            motionPreset="slideInBottom"
+            leastDestructiveRef={cancelRef}
+            onClose={onClose}
+            isOpen={isOpen}
+            isCentered
+          >
+            <AlertDialogOverlay />
+
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">{title}</AlertDialogHeader>
+              <AlertDialogCloseButton />
+              <AlertDialogBody>{message}</AlertDialogBody>
+              <AlertDialogFooter>
+                <Button variant="ghost" ref={cancelRef} onClick={cancel}>
+                  {cancelText ?? 'Close'}
+                </Button>
+                <Button ml={3} onClick={confirm} colorScheme="red">
+                  {okText ?? 'Continue'}
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </ThemeProvider>
+      </>
+    );
+  };
+
+  // pass in alert type
+  function Create(props) {
+    const rootID = "temp";
+    let div = document.getElementById(rootID);
+
+    if (!div) {
+      div = document.createElement("div");
+      div.id = rootID;
+      document.body.appendChild(div);
+    }
+
+    const root = ReactDOM.createRoot(div);
+    root.render(<AlertRoot {...props} />);
+
+    if (div) {
+      div.remove();
+    }
+  }
+
+  export function Confirm(props) {
+    Create(props);
+
+    return new Promise(resolve => {
+      returnResponse = resolve;
+    });
+  }

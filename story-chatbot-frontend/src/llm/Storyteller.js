@@ -16,6 +16,8 @@ class StoryTeller {
         // Initialize with system prompt
         this.systemPrompt = new SystemMessage({
             content: `You are an interactive storyteller. You tell stories where the player makes choices to progress.
+            The story is not limited to nature adventures but can be anything. You can think of discovering a city or a new friend.
+            You can also think of a story where the player is a detective trying to solve a mystery. Talk to NPCs to get clues.
             Format your responses exactly like this:
             [STORY] {current story segment}
             [CHOICES]
@@ -23,9 +25,9 @@ class StoryTeller {
             2. {second choice}
             3. {third choice}
 
-            Do not forget the [STORY] and [CHOICES] tags.
-            Only respond with /END when the story reaches a natural conclusion.
+            DO NOT forget the [STORY] and [CHOICES] tags.
             Wait for the player to send /START to begin the story.
+            Only respond with /END when the story reaches a natural conclusion.
             Only accept inputs of "1", "2", or "3" for choices.`
         });
         this.messageHistory.push(this.systemPrompt);
@@ -48,6 +50,11 @@ class StoryTeller {
         return "Please choose 1, 2, or 3 to continue the story.";
     }
 
+    async endStory() {
+        this.isStoryActive = false;
+        this.messageHistory = [this.systemPrompt];
+    }
+
     async startStory() {
         const userMessage = new HumanMessage("/START");
         this.messageHistory.push(userMessage);
@@ -65,17 +72,19 @@ class StoryTeller {
         console.log(response);
         this.messageHistory.push(response);
 
-        //if (response.content.includes("/END")) {
-        this.isStoryActive = false;
-        this.messageHistory = [this.systemPrompt];
-        return "/END";
-
         return this.parseResponse(response.content);
     }
 
     parseResponse(content) {
         const storyMatch = content.match(/\[STORY\](.*?)\[CHOICES\]/s);
         const choicesMatch = content.match(/\[CHOICES\](.*?)$/s);
+
+        if (!storyMatch || !choicesMatch) {
+            // Remove the last message from the history and RETRY to invoke the LLM
+            this.messageHistory.pop();
+            let userInput = this.messageHistory[this.messageHistory.length - 1].content;
+            return this.continueStory(userInput);
+        }
 
         return {
             story: storyMatch ? storyMatch[1].trim() : "",

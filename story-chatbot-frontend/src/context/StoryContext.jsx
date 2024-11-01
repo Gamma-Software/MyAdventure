@@ -44,13 +44,17 @@ export function StoryProvider({ children }) {
     setIsLoading(false);
   };
 
+  const endStoryCallback = async () => {
+    await storyteller.endStory();
+  }
+
 
   useEffect(() => {
     storyteller.initialize?.();
   }, [storyteller]);
 
   return (
-    <StoryContext.Provider value={{ messages, isLoading, currentStage, sendMessage, setCurrentStage }}>
+    <StoryContext.Provider value={{ messages, isLoading, currentStage, sendMessage, setCurrentStage, endStoryCallback }}>
       {children}
     </StoryContext.Provider>
   );

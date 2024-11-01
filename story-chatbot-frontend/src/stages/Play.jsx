@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { Text, Heading, StackDivider, VStack, Button, Center, Flex, useColorModeValue } from "@chakra-ui/react"
+import { Text, Spacer, Heading, StackDivider, VStack, Button, Center, Flex, useColorModeValue } from "@chakra-ui/react"
 import { useStory } from '../context/StoryContext';
 
 export default function Play() {
     const color = useColorModeValue('gray.500', 'gray.300');
-    const { messages, currentStage, sendMessage, isLoading, setCurrentStage } = useStory();
+    const { messages, currentStage, sendMessage, isLoading, setCurrentStage, endStoryCallback } = useStory();
     const message = messages[messages.length - 1];
     const bgButton = useColorModeValue('gray.300', 'gray.500');
     const bgButtonHover = useColorModeValue('gray.400', 'gray.600');
@@ -14,6 +14,8 @@ export default function Play() {
 
         if (typeof message.content === 'string' && message.content === '/END') {
             setCurrentStage('gameover');
+            // TODO: Maybe save the story for the user to read later
+            endStoryCallback();
         }
     }, [message]);
 
@@ -54,13 +56,12 @@ export default function Play() {
     if (currentStage !== 'play') return null;
 
     return (
-        <Flex flexDirection={'column'}>
-            <Center h='66vh' overflow='auto'>
-                <VStack spacing={4} padding={16}>
-                    <Heading as="h1" color={color} textAlign="center">{renderContent()}</Heading>
-                </VStack>
-            </Center>
-            <Center>
+        <Flex flexDirection={'column'} justifyContent={'space-between'} h='100%' overflow='scroll'>
+            <VStack spacing={4} padding={16}>
+                <Heading as="h1" color={color} textAlign="center" >{renderContent()}</Heading>
+            </VStack>
+            <Spacer />
+            <Center p={16}>
                 <VStack
                     divider={<StackDivider borderColor={color} />}
                     spacing={4}
