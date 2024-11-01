@@ -1,9 +1,14 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
 import { getEnvVar } from "../utils/env";
+import { SEXES, CHARACTERS, THEMES } from "./constants";
+
+function randomize(values) {
+    return values[Math.floor(Math.random() * values.length)];
+}
 
 class StoryTeller {
-    constructor() {
+    constructor(language) {
         this.chat = new ChatOpenAI({
             openAIApiKey: getEnvVar('VITE_OPENAI_API_KEY'),
             modelName: "gpt-4o-mini",
@@ -16,8 +21,16 @@ class StoryTeller {
         // Initialize with system prompt
         this.systemPrompt = new SystemMessage({
             content: `You are an interactive storyteller. You tell stories where the player makes choices to progress.
-            The story is not limited to nature adventures but can be anything. You can think of discovering a city or a new friend.
-            You can also think of a story where the player is a detective trying to solve a mystery. Talk to NPCs to get clues.
+
+            This is the description of the game:
+            Dive into a world of mysteries and adventures with our narrative exploration game, where you are the hero! By making choices at each stage, you’ll
+            guide the main character through puzzles, trials, and captivating quests in mystical locations. Every adventure is a unique story. Along the way,
+            you’ll face dilemmas, encounter enigmatic objects, and navigate multiple paths. It’s up to you to choose among various options to progress,
+            uncovering unexpected twists and ancient secrets. With an ending shaped by your decisions, you’ll never know where your choices will lead you!
+
+            Create a story with the following theme: {theme}
+            The character of the story is a {sex} {character}.
+
             Format your responses exactly like this:
             [STORY] {current story segment}
             [CHOICES]
@@ -25,11 +38,21 @@ class StoryTeller {
             2. {second choice}
             3. {third choice}
 
+            Tell the story in the following language: {language}
             DO NOT forget the [STORY] and [CHOICES] tags.
+            Limit the current story segment to 4 or 5 sentences.
             Wait for the player to send /START to begin the story.
             Only respond with /END when the story reaches a natural conclusion.
             Only accept inputs of "1", "2", or "3" for choices.`
         });
+
+        // Apply random values to the system prompt for the theme, sex, and character
+        // and the current language
+        this.systemPrompt.content = this.systemPrompt.content.replace("{theme}", randomize(THEMES))
+            .replace("{sex}", randomize(SEXES))
+            .replace("{character}", randomize(CHARACTERS))
+            .replace("{language}", language);
+
         this.messageHistory.push(this.systemPrompt);
     }
 

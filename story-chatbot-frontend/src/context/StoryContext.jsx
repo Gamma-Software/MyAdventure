@@ -1,13 +1,18 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import StoryTeller from '../llm/Storyteller';
-
+import { useTranslationContext } from './TranslationContext';
 const StoryContext = createContext();
 
 export function StoryProvider({ children }) {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [storyteller] = useState(() => new StoryTeller());
+  const { currentLanguage } = useTranslationContext();
+  const [storyteller, setStoryteller] = useState(() => new StoryTeller(currentLanguage));
   const [currentStage, setCurrentStage] = useState('start');
+
+  const updateLanguage = (language) => {
+    setStoryteller(new StoryTeller(language));
+  }
 
   const sendMessage = async (message) => {
     setIsLoading(true);
@@ -54,7 +59,7 @@ export function StoryProvider({ children }) {
   }, [storyteller]);
 
   return (
-    <StoryContext.Provider value={{ messages, isLoading, currentStage, sendMessage, setCurrentStage, endStoryCallback }}>
+    <StoryContext.Provider value={{ messages, isLoading, currentStage, sendMessage, setCurrentStage, endStoryCallback, updateLanguage }}>
       {children}
     </StoryContext.Provider>
   );

@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import {
   Box,
   Flex,
+  Select,
   Text,
   Avatar,
   Button,
@@ -19,23 +20,10 @@ import {
   useColorMode,
   Center,
   Heading,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  AlertDialogCloseButton,
-  AlertDialogContent,
-  AlertDialogBody,
-  AlertDialog,
-  AlertDialogFooter,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  ModalCloseButton
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon, ArrowBackIcon, RepeatIcon, HamburgerIcon } from '@chakra-ui/icons'
 import { useStory } from '../context/StoryContext'
+import { useTranslationContext } from '../context/TranslationContext';
 import { Confirm } from  "../components/QuitgameDialog";
 import { DisplayStory } from "../components/StoryModel";
 
@@ -64,8 +52,9 @@ const NavLink = (props: Props) => {
 }
 
 export default function Nav() {
-    const { messages, currentStage, setCurrentStage, endStoryCallback } = useStory();
+    const { messages, currentStage, setCurrentStage, endStoryCallback, updateLanguage } = useStory();
     const { colorMode, toggleColorMode } = useColorMode();
+    const { t, changeLanguage, currentLanguage } = useTranslationContext();
     const bgBox = useColorModeValue('gray.100', 'gray.900');
     const bgButton = useColorModeValue('gray.200', 'gray.700');
 
@@ -146,9 +135,16 @@ export default function Nav() {
 
             <Flex alignItems={'center'}>
                 <Stack direction={'row'} spacing={7}>
-                <Button onClick={toggleColorMode}>
-                    {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-                </Button>
+                    {currentStage === "start" && <Select variant='flushed' onChange={(e) => {
+                        changeLanguage(e.target.value);
+                        updateLanguage(e.target.value);
+                    }}>
+                        <option value="en">English</option>
+                        <option value="fr">Français</option>
+                    </Select>}
+                    <Button onClick={toggleColorMode}>
+                        {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+                    </Button>
 
                 {/* <Menu>
                     <MenuButton
