@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Text, Spacer, Heading, StackDivider, VStack, Button, Center, Flex, useColorModeValue } from "@chakra-ui/react"
+import { Text, Spinner, Spacer, Heading, StackDivider, VStack, Button, Center, Flex, useColorModeValue } from "@chakra-ui/react"
 import { useStory } from '../context/StoryContext';
 
 export default function Play() {
@@ -57,19 +57,23 @@ export default function Play() {
 
     return (
         <Flex flexDirection={'column'} justifyContent={'space-between'} h='100%' overflow='scroll'>
-            <VStack spacing={4} padding={16}>
-                <Heading as="h1" color={color} textAlign="center" >{renderContent()}</Heading>
-            </VStack>
-            <Spacer />
-            <Center p={16}>
-                <VStack
-                    divider={<StackDivider borderColor={color} />}
-                    spacing={4}
-                    align='stretch'
-                >
-                    {renderChoices()}
+            {isLoading ? <Center h='100%'><Spinner size='xl'/></Center> : (
+                <>
+                <VStack spacing={4} padding={16}>
+                    <Heading as="h1" color={color} textAlign="center" >{renderContent()}</Heading>
                 </VStack>
-            </Center>
+                <Spacer />
+                <Center p={16}>
+                    <VStack
+                        divider={<StackDivider borderColor={color} />}
+                        spacing={4}
+                        align='stretch'
+                    >
+                        {renderChoices()}
+                    </VStack>
+                </Center>
+            </>
+            )}
         </Flex>
     )
 }
