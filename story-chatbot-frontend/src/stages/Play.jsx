@@ -1,23 +1,29 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Text, Spinner, Spacer, Heading, StackDivider, VStack, Button, Center, Flex, useColorModeValue } from "@chakra-ui/react"
 import { useStory } from '../context/StoryContext';
 
 export default function Play() {
     const color = useColorModeValue('gray.500', 'gray.300');
     const { messages, currentStage, sendMessage, isLoading, setCurrentStage, endStoryCallback } = useStory();
+    const [willEnd, setWillEnd] = useState(false);
     const message = messages[messages.length - 1];
     const bgButton = useColorModeValue('gray.300', 'gray.500');
     const bgButtonHover = useColorModeValue('gray.400', 'gray.600');
 
     useEffect(() => {
         if (!message) return;
-
-        if (typeof message.content === 'string' && message.content === '/END') {
-            setCurrentStage('gameover');
-            // TODO: Maybe save the story for the user to read later
-            endStoryCallback();
+        console.log(message);
+        if (message.content.includes('/END') || message.choices[message.choices.length - 1].includes('/END')) {
+            setWillEnd(true);
         }
     }, [message]);
+
+    const handleEndStory = () => {
+        if (!willEnd) return;
+        setCurrentStage('gameover');
+        endStoryCallback();
+        setWillEnd(false);
+    }
 
     // Helper function to render content
     const renderContent = () => {
@@ -69,7 +75,7 @@ export default function Play() {
                         spacing={4}
                         align='stretch'
                     >
-                        {renderChoices()}
+                        {!willEnd ? renderChoices() : <Button onClick={handleEndStory}>End Story</Button>}
                     </VStack>
                 </Center>
             </>

@@ -138,7 +138,7 @@ export default function Nav() {
                     {currentStage === "start" && <Select variant='flushed' onChange={(e) => {
                         changeLanguage(e.target.value);
                         updateLanguage(e.target.value);
-                    }}>
+                    }} value={currentLanguage}>
                         <option value="en">English</option>
                         <option value="fr">Français</option>
                     </Select>}

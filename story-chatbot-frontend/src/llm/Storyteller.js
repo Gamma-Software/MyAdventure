@@ -20,16 +20,16 @@ class StoryTeller {
 
         // Initialize with system prompt
         this.systemPrompt = new SystemMessage({
-            content: `You are an interactive storyteller. You tell stories where the player makes choices to progress.
+            content: `You are an interactive storyteller. You tell stories where the player makes choices to progress. The player embodies the main character.
 
             This is the description of the game:
             Dive into a world of mysteries and adventures with our narrative exploration game, where you are the hero! By making choices at each stage, you’ll
-            guide the main character through puzzles, trials, and captivating quests in mystical locations. Every adventure is a unique story. Along the way,
+            be guided through puzzles, trials, and captivating quests. Every adventure is a unique story. Along the way,
             you’ll face dilemmas, encounter enigmatic objects, and navigate multiple paths. It’s up to you to choose among various options to progress,
             uncovering unexpected twists and ancient secrets. With an ending shaped by your decisions, you’ll never know where your choices will lead you!
 
             Create a story with the following theme: {theme}
-            The character of the story is a {sex} {character}.
+            The player is a {sex} {character}.
 
             Format your responses exactly like this:
             [STORY] {current story segment}
@@ -38,12 +38,19 @@ class StoryTeller {
             2. {second choice}
             3. {third choice}
 
+            The user input will be in the following format:
+            [CHOICE]
+            {user_choice}
+            [SEGMENT]
+            {current_segment}
+
             Tell the story in the following language: {language}
             DO NOT forget the [STORY] and [CHOICES] tags.
-            Limit the current story segment to 4 or 5 sentences.
-            Wait for the player to send /START to begin the story.
-            Only respond with /END when the story reaches a natural conclusion.
-            Only accept inputs of "1", "2", or "3" for choices.`
+            Limit the current story segment to 3 or 4 sentences.
+            The entire story must be limited to 4 segments. So make sure to end the story before the 4th segment.
+            Wait for the player to send "/START" to begin the story.
+            If the story reaches a natural conclusion, append "/END" in the story section.
+            `
         });
 
         // Apply random values to the system prompt for the theme, sex, and character
@@ -82,17 +89,17 @@ class StoryTeller {
         const userMessage = new HumanMessage("/START");
         this.messageHistory.push(userMessage);
         const response = await this.chat.invoke(this.messageHistory);
-        console.log(response);
         this.messageHistory.push(response);
         return this.parseResponse(response.content);
     }
 
     async continueStory(choice) {
-        const userMessage = new HumanMessage(choice);
+        // Current segment is the number of messages in the history minus 1 (system prompt doesn't count) divided by 2 and rounded down
+        const currentSegment = Math.floor((this.messageHistory.length - 1) / 2);
+        const userMessage = new HumanMessage(`[CHOICE]\n${choice}\n[SEGMENT]\n${currentSegment}`);
         this.messageHistory.push(userMessage);
 
         const response = await this.chat.invoke(this.messageHistory);
-        console.log(response);
         this.messageHistory.push(response);
 
         return this.parseResponse(response.content);
