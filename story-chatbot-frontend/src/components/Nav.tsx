@@ -15,6 +15,7 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  Image,
   useColorMode,
   Center,
   Heading,
@@ -124,6 +125,7 @@ export default function Nav() {
         <Box bg={bgBox} px={4}>
             <Flex h={"64px"} alignItems={'center'} justifyContent={'space-between'}>
             <Flex alignItems={'center'}>
+                <Image src="/logo.svg" alt="Logo" boxSize="40px" mr={4} />
                 <Heading size='md' textAlign={'center'} mr={4}>MyAdventure</Heading>
                 {currentStage === "play" ? (
                     <Stack direction={'row'} spacing={2}>
