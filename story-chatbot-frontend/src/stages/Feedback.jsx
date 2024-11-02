@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { FormControl, VStack, Flex, FormLabel, Button, Textarea, Input } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
@@ -8,13 +9,17 @@ import { useTranslationContext } from '../context/TranslationContext';
 
 export default function Feedback({setCurrentStage, isLoading, messages, llm}) {
     const { t } = useTranslationContext();
+    const [sendingFeedback, setSendingFeedback] = useState(false);
+
     const formik = useFormik({
         initialValues: { ratings: {"story": 0, "characters": 0}, email: "", inputfeedback: "", messages: messages, llm: llm },
         onSubmit: values => {
+            setSendingFeedback(true);
             sendFeedbackToMake(values).then(() => {
                 setCurrentStage('start');
                 formik.resetForm();
             }).catch(error => {
+                setSendingFeedback(false);
                 setCurrentStage('start');
                 formik.resetForm();
             });
@@ -56,7 +61,7 @@ export default function Feedback({setCurrentStage, isLoading, messages, llm}) {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}/>
                 </FormControl>
-                <Button type="submit" colorScheme="green" isLoading={isLoading} loadingText='Loading...' rightIcon={<ArrowForwardIcon />} alignSelf={"end"}  >
+                <Button type="submit" colorScheme="green" isLoading={sendingFeedback} loadingText='Loading...' rightIcon={<ArrowForwardIcon />} alignSelf={"end"}  >
                     {t('feedback_submit')}
                 </Button>
             </VStack>
