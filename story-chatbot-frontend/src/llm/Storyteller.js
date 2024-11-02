@@ -101,8 +101,16 @@ class StoryTeller {
     async continueStory(choice) {
         // Current segment is the number of messages in the history minus 1 (system prompt doesn't count) divided by 2 and rounded down
         //const currentSegment = Math.floor((this.messageHistory.length - 1) / 2);
-        const currentSegment = Math.floor((this.messageHistory.length - 1) / 2) === 2 ? "End the story" : "Continue the story";
-        const userMessage = new HumanMessage(`[CHOICE]\n${choice}\n[INSTRUCTIONS]\n${currentSegment}`);
+        let nextInstruction = "Continue the story";
+        const nbInteraction = Math.floor((this.messageHistory.length - 1) / 2);
+        if (nbInteraction === 2) {
+            nextInstruction = "The story is in the middle. Make sure to orient the story towards a natural conclusion.";
+        }
+        if (nbInteraction === 4) {
+            nextInstruction = "End the story in a natural way.";
+        }
+
+        const userMessage = new HumanMessage(`[CHOICE]\n${choice}\n[INSTRUCTIONS]\n${nextInstruction}`);
         this.messageHistory.push(userMessage);
 
         const response = await this.chat.invoke(this.messageHistory);
