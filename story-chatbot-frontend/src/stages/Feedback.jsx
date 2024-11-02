@@ -7,10 +7,12 @@ import { useSubmit } from '../hooks/useSubmit';
 import { useStory } from '../context/StoryContext';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { sendFeedbackToSlack } from '../utils/feedback';
+import { useTranslationContext } from '../context/TranslationContext';
 
 export default function Feedback({setCurrentStage, isLoading}) {
+    const { t } = useTranslationContext();
     const formik = useFormik({
-        initialValues: { ratings: {"How was the story?": 0, "How was the characters?": 0}, email: "", inputfeedback: "" },
+        initialValues: { ratings: {"story": 0, "characters": 0}, email: "", inputfeedback: "" },
         onSubmit: values => {
             sendFeedbackToSlack(values).then(() => {
                 setCurrentStage('start');
@@ -32,14 +34,14 @@ export default function Feedback({setCurrentStage, isLoading}) {
             <VStack spacing={4} alignItems='stretch'>
                 {questions.map((question, index) => (
                     <Flex key={index} justifyContent={'space-between'} alignItems={'center'}>
-                        <FormLabel>{question}</FormLabel>
+                        <FormLabel>{t(`feedback_q${index + 1}`)}</FormLabel>
                         <Rating style={{ maxWidth: 250 }} value={formik.values.ratings[question]} onChange={(e) => formik.setFieldValue('ratings', {...formik.values.ratings, [question]: e})} />
                     </Flex>
                 ))}
                 <FormControl isInvalid={formik.touched.feedback && formik.errors.feedback}>
-                    <FormLabel>Any other feedback?</FormLabel>
+                    <FormLabel>{t('feedback_q3')}</FormLabel>
                     <Textarea
-                        placeholder='Details about your experience, give suggestions, etc.'
+                        placeholder={t('feedback_q3_placeholder')}
                         id="inputfeedback"
                         name="inputfeedback"
                         value={formik.values.inputfeedback}
@@ -48,7 +50,7 @@ export default function Feedback({setCurrentStage, isLoading}) {
                     />
                 </FormControl>
                 <FormControl isInvalid={formik.touched.email && formik.errors.email}>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t('feedback_email')}</FormLabel>
                     <Input
                     id="email"
                     name="email"
@@ -58,7 +60,7 @@ export default function Feedback({setCurrentStage, isLoading}) {
                     onBlur={formik.handleBlur}/>
                 </FormControl>
                 <Button type="submit" colorScheme="green" isLoading={isLoading} loadingText='Loading...' rightIcon={<ArrowForwardIcon />} alignSelf={"end"}  >
-                    Play Again
+                    {t('feedback_submit')}
                 </Button>
             </VStack>
         </form>
