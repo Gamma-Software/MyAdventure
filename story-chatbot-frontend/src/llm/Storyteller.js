@@ -103,10 +103,10 @@ class StoryTeller {
         //const currentSegment = Math.floor((this.messageHistory.length - 1) / 2);
         let nextInstruction = "Continue the story";
         const nbInteraction = Math.floor((this.messageHistory.length - 1) / 2);
-        if (nbInteraction === 2) {
+        if (nbInteraction === 3) {
             nextInstruction = "The story is in the middle. Make sure to orient the story towards a natural conclusion.";
         }
-        if (nbInteraction === 4) {
+        if (nbInteraction === 6) {
             nextInstruction = "End the story in a natural way.";
         }
 

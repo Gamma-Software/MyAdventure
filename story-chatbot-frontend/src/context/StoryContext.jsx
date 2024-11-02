@@ -9,6 +9,7 @@ export function StoryProvider({ children }) {
   const { currentLanguage } = useTranslationContext();
   const [storyteller, setStoryteller] = useState(() => new StoryTeller(currentLanguage));
   const [currentStage, setCurrentStage] = useState('start');
+  const llm = storyteller.chat.modelName;
 
   const updateLanguage = (language) => {
     setStoryteller(new StoryTeller(language));
@@ -51,6 +52,7 @@ export function StoryProvider({ children }) {
 
   const endStoryCallback = async () => {
     await storyteller.endStory();
+    setMessages([]);
   }
 
 
@@ -59,7 +61,7 @@ export function StoryProvider({ children }) {
   }, [storyteller]);
 
   return (
-    <StoryContext.Provider value={{ messages, isLoading, currentStage, sendMessage, setCurrentStage, endStoryCallback, updateLanguage }}>
+    <StoryContext.Provider value={{ llm, messages, isLoading, currentStage, sendMessage, setCurrentStage, endStoryCallback, updateLanguage }}>
       {children}
     </StoryContext.Provider>
   );

@@ -48,7 +48,7 @@ import {
                 isCentered>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader fontSize="lg" fontWeight="bold">Story and Choices</ModalHeader>
+                    <ModalHeader fontSize="lg" fontWeight="bold">{title}</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
                         {message}

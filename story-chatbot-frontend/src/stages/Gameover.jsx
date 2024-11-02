@@ -20,7 +20,7 @@ import Feedback from "./Feedback";
 export default function Gameover() {
     const color = useColorModeValue('gray.500', 'gray.300');
 
-    const { currentStage, setCurrentStage, isLoading } = useStory();
+    const { currentStage, setCurrentStage, isLoading, messages, llm } = useStory();
 
     // If the current stage is not 'gameover', don't render the component
     if (currentStage !== 'gameover') return null;
@@ -32,7 +32,7 @@ export default function Gameover() {
             </Center>
             <Spacer />
             <Box pl={{base: 4, md: 16}} pr={{base: 4, md: 16}} pb={{base: 4, md: 16}}>
-                <Feedback setCurrentStage={setCurrentStage} isLoading={isLoading} />
+                <Feedback setCurrentStage={setCurrentStage} isLoading={isLoading} messages={messages} llm={llm} />
             </Box>
         </Flex>
     );

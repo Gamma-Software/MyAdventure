@@ -98,7 +98,7 @@ export default function Nav() {
         }).join('\n');
 
         DisplayStory({
-        title: "Story and Choices",
+        title: t('storymodal_title'),
         message: msg,
         okText: 'Continue',
         cancelText: 'Close',
@@ -120,12 +120,12 @@ export default function Nav() {
                 <Heading size='md' textAlign={'center'} hideBelow={currentStage === "play" ? "md" : undefined} mr={4}>MyAdventure</Heading>
                 {currentStage === "play" ? (
                     <Stack direction={'row'} spacing={2}>
-                    {/* <Button onClick={handleQuit} bg={bgButton}>
+                    <Button onClick={handleQuit} bg={bgButton}>
                         <ArrowBackIcon />
-                    </Button> */}
-                    <Button onClick={handleRepeat} bg={bgButton}>
-                        <RepeatIcon />
                     </Button>
+                    {/* <Button onClick={handleRepeat} bg={bgButton}>
+                        <RepeatIcon />
+                    </Button> */}
                     {(messages.length > 1 && currentStage === "play") ? (
                     <Button onClick={handleUpDown} bg={bgButton}>
                         <HamburgerIcon />

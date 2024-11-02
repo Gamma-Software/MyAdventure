@@ -9,10 +9,10 @@ import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { sendFeedbackToSlack } from '../utils/feedback';
 import { useTranslationContext } from '../context/TranslationContext';
 
-export default function Feedback({setCurrentStage, isLoading}) {
+export default function Feedback({setCurrentStage, isLoading, messages, llm}) {
     const { t } = useTranslationContext();
     const formik = useFormik({
-        initialValues: { ratings: {"story": 0, "characters": 0}, email: "", inputfeedback: "" },
+        initialValues: { ratings: {"story": 0, "characters": 0}, email: "", inputfeedback: "", messages: messages, llm: llm },
         onSubmit: values => {
             sendFeedbackToSlack(values).then(() => {
                 setCurrentStage('start');
