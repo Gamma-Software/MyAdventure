@@ -1,4 +1,4 @@
-import { Heading, VStack, Spacer, Button, Center, Flex, useColorModeValue } from "@chakra-ui/react"
+import { Text, VStack, Spacer, Button, Center, Flex, useColorModeValue } from "@chakra-ui/react"
 import { ArrowForwardIcon } from '@chakra-ui/icons'
 import { useStory } from '../context/StoryContext';
 import { useTranslationContext } from '../context/TranslationContext';
@@ -20,9 +20,9 @@ export default function Start() {
     return (
         <Center h='100%'>
         <Flex flexDirection={'column'}>
-            <VStack spacing={4} padding={16}>
-                <Heading as="h1" color={color} textAlign="center">{t('stage_start_title')}</Heading>
-                <Heading as="h2" color={color} textAlign="center">{t('stage_start_subtitle')}</Heading>
+            <VStack spacing={4} padding={{base: 4, md: 16}}>
+                <Text fontSize={{base: "xl", md: "2xl"}}  color={color} textAlign="center">{t('stage_start_title')}</Text>
+                <Text fontSize={{base: "2xl", md: "3xl"}} fontWeight="bold" color={color} textAlign="center">{t('stage_start_subtitle')}</Text>
             </VStack>
             <Center>
                 <Button
