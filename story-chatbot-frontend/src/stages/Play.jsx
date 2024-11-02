@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import { Text, Spinner, Spacer, Heading, StackDivider, VStack, Button, Center, Flex, useColorModeValue } from "@chakra-ui/react"
+import { Text, Image, Stack, Card, CardBody, Spinner, Spacer, Heading, StackDivider, VStack, Button, Center, Flex, useColorModeValue } from "@chakra-ui/react"
 import { useStory } from '../context/StoryContext';
+import { useBreakpoint } from '@chakra-ui/react';
+
 
 export default function Play() {
     const color = useColorModeValue('gray.500', 'gray.300');
     const { messages, currentStage, sendMessage, isLoading, setCurrentStage, endStoryCallback } = useStory();
     const [willEnd, setWillEnd] = useState(false);
-    const message = messages[messages.length - 1];
+    let message = messages[messages.length - 1];
+    if (messages.length === 0) message = {content: "This is a story about a cat and a dog. The cat is a good friend of the dog. They are playing together. The end.", choices: ["1. This is a goorsutiernstauinrestuairnestauirnseturnaisetrnuiastenrauistd story", "2. This is a bad story", "3. This is a boring story"]};
+    const { breakpoint } = useBreakpoint();
     const bgButton = useColorModeValue('gray.300', 'gray.500');
     const bgButtonHover = useColorModeValue('gray.400', 'gray.600');
 
@@ -75,13 +79,14 @@ export default function Play() {
                 </VStack>
                 <Spacer />
                 <Center p={{base: 4, md: 16}}>
-                    <VStack
+                    <Stack
                         divider={<StackDivider borderColor={color} />}
                         spacing={4}
                         align='stretch'
+                        direction={{base: 'column', sm: 'row'}}
                     >
                         {!willEnd ? renderChoices() : <Button onClick={handleEndStory}>End Story</Button>}
-                    </VStack>
+                    </Stack>
                 </Center>
             </>
             )}

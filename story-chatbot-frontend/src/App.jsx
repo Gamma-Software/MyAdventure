@@ -13,7 +13,6 @@ function App() {
         <StoryProvider>
           <Fullscreen>
             <Playground />
-            {/* <ChatInterface /> */}
           </Fullscreen>
         </StoryProvider>
       </TranslationProvider>
