@@ -24,7 +24,7 @@ const sendFeedbackToSlack = async (message) => {
 
 const sendFeedbackToMake = async (message) => {
     const url = '/api/send-feedback-make'; // API route in the same Vercel deployment
-    const payload = JSON.stringify({ text: JSON.stringify(message, null, 2) });
+    const payload = JSON.stringify(message, null, 2);
 
     try {
         const response = await fetch(url, {
