@@ -28,7 +28,7 @@ export default function Gameover() {
             <Center h='33vh'>
                 <Heading as="h1" size='2xl' color={color} textAlign="center">The End</Heading>
             </Center>
-            <Box pl={16} pr={16}>
+            <Box pl={{base: 4, md: 16}} pr={{base: 4, md: 16}}>
                 <Feedback setCurrentStage={setCurrentStage} isLoading={isLoading} />
             </Box>
         </Flex>

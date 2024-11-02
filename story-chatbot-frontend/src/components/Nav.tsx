@@ -21,6 +21,7 @@ import {
   Center,
   Heading,
 } from '@chakra-ui/react'
+import { useBreakpointValue } from '@chakra-ui/react'
 import { MoonIcon, SunIcon, ArrowBackIcon, RepeatIcon, HamburgerIcon } from '@chakra-ui/icons'
 import { useStory } from '../context/StoryContext'
 import { useTranslationContext } from '../context/TranslationContext';
@@ -54,6 +55,7 @@ const NavLink = (props: Props) => {
 export default function Nav() {
     const { messages, currentStage, setCurrentStage, endStoryCallback, updateLanguage } = useStory();
     const { colorMode, toggleColorMode } = useColorMode();
+    const breakpoint = useBreakpointValue({ base: "base", md: "md" });
     const { t, changeLanguage, currentLanguage } = useTranslationContext();
     const bgBox = useColorModeValue('gray.100', 'gray.900');
     const bgButton = useColorModeValue('gray.200', 'gray.700');
@@ -114,8 +116,8 @@ export default function Nav() {
         <Box bg={bgBox} px={4}>
             <Flex h={"64px"} alignItems={'center'} justifyContent={'space-between'}>
             <Flex alignItems={'center'}>
-                <Image src="/logo.svg" alt="Logo" boxSize="40px" mr={4} />
-                <Heading size='md' textAlign={'center'} mr={4}>MyAdventure</Heading>
+                <Image src="/logo.svg" alt="Logo" boxSize="40px" mr={4} hideBelow={currentStage === "play" ? "md" : undefined}  />
+                <Heading size='md' textAlign={'center'} hideBelow={currentStage === "play" ? "md" : undefined} mr={4}>MyAdventure</Heading>
                 {currentStage === "play" ? (
                     <Stack direction={'row'} spacing={2}>
                         <Button onClick={handleQuit} bg={bgButton}>
@@ -139,8 +141,17 @@ export default function Nav() {
                         changeLanguage(e.target.value);
                         updateLanguage(e.target.value);
                     }} value={currentLanguage}>
-                        <option value="en">English</option>
-                        <option value="fr">Français</option>
+                        {breakpoint === "base" ? (
+                            <>
+                                <option value="en">En</option>
+                                <option value="fr">Fr</option>
+                            </>
+                        ) : (
+                            <>
+                                <option value="en">English</option>
+                                <option value="fr">Français</option>
+                            </>
+                        )}
                     </Select>}
                     <Button onClick={toggleColorMode}>
                         {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}

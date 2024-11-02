@@ -32,7 +32,7 @@ export default function Play() {
         }
 
         if (message.content?.story) {
-        return <Text>{message.content.story}</Text>;
+            return <Text>{message.content.story}</Text>;
         }
 
         return null;
@@ -44,7 +44,12 @@ export default function Play() {
                 <Button
                     key={index}
                     onClick={() => sendMessage((index + 1).toString())}
-                    size='sm'
+                    width={{base: '80vw', md: 'auto'}}
+                    height={[`${choice.length > 30 ? "60px" : "40px"}`, "40px"]}
+                    style={{
+                        whiteSpace: "normal",
+                        wordWrap: "break-word",
+                    }}
                     bg={bgButton}
                     _hover={{
                         bg: bgButtonHover
@@ -62,14 +67,14 @@ export default function Play() {
     if (currentStage !== 'play') return null;
 
     return (
-        <Flex flexDirection={'column'} justifyContent={'space-between'} h='100%' overflow='scroll'>
+        <Flex flexDirection={'column'} justifyContent={'space-between'} h='100%'>
             {isLoading ? <Center h='100%'><Spinner size='xl'/></Center> : (
                 <>
-                <VStack spacing={4} padding={16}>
-                    <Heading as="h1" color={color} textAlign="center" >{renderContent()}</Heading>
+                <VStack spacing={4} padding={{base: 4, md: 16}}>
+                    <Text fontSize={{base: "xl", md: "2xl"}} color={color} textAlign="center" >{renderContent()}</Text>
                 </VStack>
                 <Spacer />
-                <Center p={16}>
+                <Center p={{base: 4, md: 16}}>
                     <VStack
                         divider={<StackDivider borderColor={color} />}
                         spacing={4}
