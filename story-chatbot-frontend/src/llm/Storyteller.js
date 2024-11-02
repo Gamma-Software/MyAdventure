@@ -1,7 +1,7 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
 import { getEnvVar } from "../utils/env";
-import { SEXES, CHARACTERS, THEMES } from "./constants";
+import { SEXES, CHARACTERS, THEMES, TIME_TAKEN_THRESHOLD } from "./constants";
 
 function randomize(values) {
     return values[Math.floor(Math.random() * values.length)];
@@ -109,7 +109,7 @@ class StoryTeller {
             nextInstruction = "End the story in a natural way.";
         }
 
-        if (timeTaken < 1000) {
+        if (timeTaken < TIME_TAKEN_THRESHOLD) {
             // if the user has responded in less than a second, tell the llm to speed up the story and end it.
             nextInstruction = nextInstruction + "\nThe user is not engaged. Speed up the story and make it end naturally.";
         }

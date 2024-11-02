@@ -51,4 +51,6 @@ const THEMES = [
     "noir"
 ];
 
-export { SEXES, CHARACTERS, THEMES };
+const TIME_TAKEN_THRESHOLD = 3000;
+
+export { SEXES, CHARACTERS, THEMES, TIME_TAKEN_THRESHOLD };
