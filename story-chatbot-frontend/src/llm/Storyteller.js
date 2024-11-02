@@ -13,7 +13,7 @@ class StoryTeller {
             openAIApiKey: getEnvVar('VITE_OPENAI_API_KEY'),
             modelName: "gpt-4o-mini",
             temperature: 0.7,
-            verbose: true,
+            verbose: false,
         });
         this.isStoryActive = false;
         this.messageHistory = [];
@@ -38,18 +38,23 @@ class StoryTeller {
             2. {second choice}
             3. {third choice}
 
+            If the story reaches a natural conclusion, append "/END" in the story section like this:
+            [STORY] {current story segment}
+            [CHOICES]
+            /END
+
             The user input will be in the following format:
             [CHOICE]
             {user_choice}
-            [SEGMENT]
-            {current_segment}
+            [INSTRUCTIONS]
+            {instructions for the storyteller to follow}
 
             Tell the story in the following language: {language}
             DO NOT forget the [STORY] and [CHOICES] tags.
             Limit the current story segment to 3 or 4 sentences.
-            The entire story must be limited to 4 segments. So make sure to end the story before the 4th segment.
+            The user input will contain instructions for you to follow.
             Wait for the player to send "/START" to begin the story.
-            If the story reaches a natural conclusion, append "/END" in the story section.
+
             `
         });
 
@@ -95,25 +100,30 @@ class StoryTeller {
 
     async continueStory(choice) {
         // Current segment is the number of messages in the history minus 1 (system prompt doesn't count) divided by 2 and rounded down
-        const currentSegment = Math.floor((this.messageHistory.length - 1) / 2);
-        const userMessage = new HumanMessage(`[CHOICE]\n${choice}\n[SEGMENT]\n${currentSegment}`);
+        //const currentSegment = Math.floor((this.messageHistory.length - 1) / 2);
+        const currentSegment = Math.floor((this.messageHistory.length - 1) / 2) === 2 ? "End the story" : "Continue the story";
+        const userMessage = new HumanMessage(`[CHOICE]\n${choice}\n[INSTRUCTIONS]\n${currentSegment}`);
         this.messageHistory.push(userMessage);
 
         const response = await this.chat.invoke(this.messageHistory);
         this.messageHistory.push(response);
 
-        return this.parseResponse(response.content);
+        const parsedResponse = this.parseResponse(response.content);
+        console.log(this.messageHistory);
+        return parsedResponse;
     }
 
     parseResponse(content) {
         const storyMatch = content.match(/\[STORY\](.*?)\[CHOICES\]/s);
+        console.log("content:", content);
         const choicesMatch = content.match(/\[CHOICES\](.*?)$/s);
 
         if (!storyMatch || !choicesMatch) {
             // Remove the last message from the history and RETRY to invoke the LLM
             this.messageHistory.pop();
-            let userInput = this.messageHistory[this.messageHistory.length - 1].content;
-            return this.continueStory(userInput);
+            let lastUserInput = this.messageHistory[this.messageHistory.length - 1].content;
+            console.log("lastUserInput:", lastUserInput);
+            return this.continueStory(lastUserInput);
         }
 
         return {
