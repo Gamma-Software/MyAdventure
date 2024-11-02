@@ -13,7 +13,7 @@ export default async function handler(req, res) {
             body: JSON.stringify(req.body)
         });
 
-        if (!response.ok) {
+        if (!response.text === "Accepted") {
             throw new Error(`Make API responded with ${response.status}`);
         }
 
