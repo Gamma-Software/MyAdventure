@@ -1,12 +1,9 @@
-import { useState, useEffect} from 'react';
-import { useColorModeValue, FormControl, VStack, Flex, FormLabel, Button, Textarea, Input, FormErrorMessage } from "@chakra-ui/react";
+import { FormControl, VStack, Flex, FormLabel, Button, Textarea, Input } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 import { Rating } from '@smastrom/react-rating';
-import { useSubmit } from '../hooks/useSubmit';
-import { useStory } from '../context/StoryContext';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
-import { sendFeedbackToSlack } from '../utils/feedback';
+import { sendFeedbackToMake } from '../utils/feedback';
 import { useTranslationContext } from '../context/TranslationContext';
 
 export default function Feedback({setCurrentStage, isLoading, messages, llm}) {
@@ -14,7 +11,7 @@ export default function Feedback({setCurrentStage, isLoading, messages, llm}) {
     const formik = useFormik({
         initialValues: { ratings: {"story": 0, "characters": 0}, email: "", inputfeedback: "", messages: messages, llm: llm },
         onSubmit: values => {
-            sendFeedbackToSlack(values).then(() => {
+            sendFeedbackToMake(values).then(() => {
                 setCurrentStage('start');
                 formik.resetForm();
             }).catch(error => {
