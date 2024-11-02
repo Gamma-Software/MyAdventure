@@ -120,9 +120,9 @@ export default function Nav() {
                 <Heading size='md' textAlign={'center'} hideBelow={currentStage === "play" ? "md" : undefined} mr={4}>MyAdventure</Heading>
                 {currentStage === "play" ? (
                     <Stack direction={'row'} spacing={2}>
-                        <Button onClick={handleQuit} bg={bgButton}>
+                    {/* <Button onClick={handleQuit} bg={bgButton}>
                         <ArrowBackIcon />
-                    </Button>
+                    </Button> */}
                     <Button onClick={handleRepeat} bg={bgButton}>
                         <RepeatIcon />
                     </Button>

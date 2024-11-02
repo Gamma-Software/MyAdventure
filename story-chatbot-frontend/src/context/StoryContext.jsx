@@ -8,7 +8,7 @@ export function StoryProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const { currentLanguage } = useTranslationContext();
   const [storyteller, setStoryteller] = useState(() => new StoryTeller(currentLanguage));
-  const [currentStage, setCurrentStage] = useState('start');
+  const [currentStage, setCurrentStage] = useState('play');
 
   const updateLanguage = (language) => {
     setStoryteller(new StoryTeller(language));
