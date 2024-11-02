@@ -14,10 +14,15 @@ export default function Play() {
     const bgButton = useColorModeValue('gray.300', 'gray.500');
     const bgButtonHover = useColorModeValue('gray.400', 'gray.600');
     const { t } = useTranslationContext();
+    // keep track of the time the user responded
+    const [timeResponse, setTimeResponse] = useState(0);
+
+    useEffect(() => {
+        setTimeResponse(new Date().getTime());
+    }, [message]);
 
     useEffect(() => {
         if (!message) return;
-        console.log(message);
         if (message.content.includes('/END')){
             // remove the /END from the message
             message.content = message.content.replace('/END', '');
@@ -53,7 +58,10 @@ export default function Play() {
             return message.choices.map((choice, index) => (
                 <Button
                     key={index}
-                    onClick={() => sendMessage((index + 1).toString())}
+                    onClick={() => {
+                        const timeTaken = new Date().getTime() - timeResponse;
+                        sendMessage((index + 1).toString(), timeTaken);
+                    }}
                     width={{base: '80vw', md: 'auto'}}
                     height={[`${choice.length > 30 ? "60px" : "40px"}`, "40px"]}
                     style={{

@@ -52,10 +52,9 @@ class StoryTeller {
             Tell the story in the following language: {language}
             DO NOT forget the [STORY] and [CHOICES] tags.
             Limit the current story segment to 3 or 4 sentences.
+            Make it engaging and interesting. Don't make it too long and beat around the bush.
             The user input will contain instructions for you to follow.
-            Wait for the player to send "/START" to begin the story.
-
-            `
+            Wait for the player to send "/START" to begin the story.`
         });
 
         // Apply random values to the system prompt for the theme, sex, and character
@@ -68,7 +67,7 @@ class StoryTeller {
         this.messageHistory.push(this.systemPrompt);
     }
 
-    async processMessage(userInput) {
+    async processMessage(userInput, timeTaken) {
         if (userInput === "/START" && !this.isStoryActive) {
             this.isStoryActive = true;
             return this.startStory();
@@ -79,7 +78,7 @@ class StoryTeller {
         }
 
         if (["1", "2", "3"].includes(userInput)) {
-            return this.continueStory(userInput);
+            return this.continueStory(userInput, timeTaken);
         }
 
         return "Please choose 1, 2, or 3 to continue the story.";
@@ -98,7 +97,7 @@ class StoryTeller {
         return this.parseResponse(response.content);
     }
 
-    async continueStory(choice) {
+    async continueStory(choice, timeTaken) {
         // Current segment is the number of messages in the history minus 1 (system prompt doesn't count) divided by 2 and rounded down
         //const currentSegment = Math.floor((this.messageHistory.length - 1) / 2);
         let nextInstruction = "Continue the story";
@@ -108,6 +107,11 @@ class StoryTeller {
         }
         if (nbInteraction === 6) {
             nextInstruction = "End the story in a natural way.";
+        }
+
+        if (timeTaken < 1000) {
+            // if the user has responded in less than a second, tell the llm to speed up the story and end it.
+            nextInstruction = nextInstruction + "\nThe user is not engaged. Speed up the story and make it end naturally.";
         }
 
         const userMessage = new HumanMessage(`[CHOICE]\n${choice}\n[INSTRUCTIONS]\n${nextInstruction}`);
@@ -123,14 +127,12 @@ class StoryTeller {
 
     parseResponse(content) {
         const storyMatch = content.match(/\[STORY\](.*?)\[CHOICES\]/s);
-        console.log("content:", content);
         const choicesMatch = content.match(/\[CHOICES\](.*?)$/s);
 
         if (!storyMatch || !choicesMatch) {
             // Remove the last message from the history and RETRY to invoke the LLM
             this.messageHistory.pop();
             let lastUserInput = this.messageHistory[this.messageHistory.length - 1].content;
-            console.log("lastUserInput:", lastUserInput);
             return this.continueStory(lastUserInput);
         }
 

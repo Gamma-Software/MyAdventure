@@ -19,7 +19,7 @@ function ChatInterface() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    await sendMessage(input);
+    await sendMessage(input, -1);
     setInput('');
   };
 

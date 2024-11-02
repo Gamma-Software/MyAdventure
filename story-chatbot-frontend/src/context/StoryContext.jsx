@@ -15,10 +15,10 @@ export function StoryProvider({ children }) {
     setStoryteller(new StoryTeller(language));
   }
 
-  const sendMessage = async (message) => {
+  const sendMessage = async (message, timeResponse) => {
     setIsLoading(true);
     try {
-      const response = await storyteller.processMessage(message);
+      const response = await storyteller.processMessage(message, timeResponse);
 
       const newMessage = {
         role: 'user',

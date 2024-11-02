@@ -9,7 +9,7 @@ export default function Start() {
     const { t } = useTranslationContext();
 
     const startGame = () => {
-        sendMessage("/START").then(() => {
+        sendMessage("/START", -1).then(() => {
             setCurrentStage('play');
         });
     }
