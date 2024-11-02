@@ -2,17 +2,18 @@ import { useEffect, useState } from "react";
 import { Text, Image, Stack, Card, CardBody, Spinner, Spacer, Heading, StackDivider, VStack, Button, Center, Flex, useColorModeValue } from "@chakra-ui/react"
 import { useStory } from '../context/StoryContext';
 import { useBreakpoint } from '@chakra-ui/react';
-
+import { useTranslationContext } from '../context/TranslationContext';
 
 export default function Play() {
     const color = useColorModeValue('gray.500', 'gray.300');
     const { messages, currentStage, sendMessage, isLoading, setCurrentStage, endStoryCallback } = useStory();
     const [willEnd, setWillEnd] = useState(false);
     let message = messages[messages.length - 1];
-    if (messages.length === 0) message = {content: "This is a story about a cat and a dog. The cat is a good friend of the dog. They are playing together. The end.", choices: ["1. This is a goorsutiernstauinrestuairnestauirnseturnaisetrnuiastenrauistd story", "2. This is a bad story", "3. This is a boring story"]};
+    if (messages.length === 0) message = {content: "This is a story about a cat and a dog. The cat is a good friend of the dog. They are playing together. The end.", choices: ["1. This is a goorsutiernstauinre stuairnestau rnsetur naisetr nuiastenrauistd story", "2. This is a bad story", "3. This is a boring story"]};
     const { breakpoint } = useBreakpoint();
     const bgButton = useColorModeValue('gray.300', 'gray.500');
     const bgButtonHover = useColorModeValue('gray.400', 'gray.600');
+    const { t } = useTranslationContext();
 
     useEffect(() => {
         if (!message) return;
@@ -83,9 +84,9 @@ export default function Play() {
                         divider={<StackDivider borderColor={color} />}
                         spacing={4}
                         align='stretch'
-                        direction={{base: 'column', sm: 'row'}}
+                        direction={'column'}
                     >
-                        {!willEnd ? renderChoices() : <Button onClick={handleEndStory}>End Story</Button>}
+                        {!willEnd ? renderChoices() : <Button onClick={handleEndStory}>{t('end_story')}</Button>}
                     </Stack>
                 </Center>
             </>
