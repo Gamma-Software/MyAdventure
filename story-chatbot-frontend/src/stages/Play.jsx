@@ -18,7 +18,12 @@ export default function Play() {
     useEffect(() => {
         if (!message) return;
         console.log(message);
-        if (message.content.includes('/END') || message.choices[message.choices.length - 1].includes('/END')) {
+        if (message.content.includes('/END')){
+            // remove the /END from the message
+            message.content = message.content.replace('/END', '');
+            setWillEnd(true);
+        }
+        if (message.choices[message.choices.length - 1].includes('/END')) {
             setWillEnd(true);
         }
     }, [message]);

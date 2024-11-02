@@ -1,16 +1,8 @@
 import {
-    Text,
     Center,
     Flex,
     Heading,
     useColorModeValue,
-    FormControl,
-    FormLabel,
-    FormErrorMessage,
-    FormHelperText,
-    Input,
-    Button,
-    VStack,
     Box,
     Spacer
 } from "@chakra-ui/react";
